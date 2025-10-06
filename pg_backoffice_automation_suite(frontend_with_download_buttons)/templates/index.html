@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Backoffice Automation</title>
+  <style>
+    :root {
+      --primary: #4e54c8;
+      --secondary: #8f94fb;
+      --navbar-bg: #f8f9fa;
+      --success: #28a745;
+      --error: #dc3545;
+      --text: #1c1c1c;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glow: 0 0 10px rgba(78, 84, 200, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--navbar-bg);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar h1 {
+      color: #000000b3;
+      font-size: 18px;
+      margin: 0;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .nav-right {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+    }
+
+    .readme-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .readme-btn {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border: none;
+      color: white;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .readme-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #5a0ebc, #1f65e0);
+    }
+
+    .readme-panel {
+      display: none;
+      position: absolute;
+      top: 35px;
+      right: 0;
+      width: 300px;
+      max-height: 500px;         /* Limits height */
+      overflow-y: auto; 
+      /* background: #b2b4e1(74, 76, 215, 0.95); */
+      background: var(--glass-bg);
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 999;
+      margin-top: 20px;
+    }
+
+    .readme-wrapper:hover .readme-panel,
+    .readme-panel:hover {
+      display: block;
+    }
+
+
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+      flex-wrap: wrap;
+    }
+
+    .container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+      color: #fff;
+    }
+
+    select,
+    input[type='file'] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    select:hover,
+    input[type='file']:hover {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      transform: scale(1.02);
+    }
+
+    select:focus,
+    input[type='file']:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(78, 84, 200, 0.6);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: var(--glow);
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(78, 84, 200, 0.8);
+    }
+
+    .output {
+      margin-top: 25px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      min-height: 60px;
+    }
+
+    .success {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .error {
+      color: var(--error);
+      font-weight: bold;
+    }
+
+    .spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40px;
+    }
+
+    .spinner::after {
+      content: '';
+      width: 30px;
+      height: 30px;
+      border: 4px solid #ccc;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-right {
+        position: static;
+        margin-top: 10px;
+      }
+
+      .readme-panel {
+        right: auto;
+        left: 0;
+        top: 40px;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+  <h1>Pg Backoffice Dashboard</h1>
+    <div class="nav-right">
+      <div class="readme-wrapper">
+        <button class="readme-btn">📘 Readme</button>
+        <div class="readme-panel">
+          <h2>Payment Gateway Backoffice Automation Suite</h2>
+          <p><strong>Overview:</strong> This dashboard is designed to streamline backoffice operations for payment gateway automation. Backoffice Application Automation for extracting Payment Information, using Python and Selenium</p>
+          <p><strong>Objective:</strong></p>
+          <ol>
+            <li>Application facilitates automated fetching of Payment information of individual order IDs, batch IDs with different payment statuses in a database during events such as RDS failure or other payment failures.</li>
+            <li>The code utilizes the PG Backoffice Application and the Selenium browser automation tool to emulate user actions and download CSV files for each order ID provided in a list. These individual CSV files are then merged into a consolidated output list and saved to a specified path.</li>
+            <li>Also this code utilizes the PG Backoffice Application and the Selenium browser automation tool to emulate user actions and download CSV files for each batch ID provided in a list</li>
+            <li>By automating these actions, the tool eliminates the need for manual intervention and streamlines the entire process from start to end.</li>
+          </ol>
+          <p><strong>Dependencies:</strong></p>
+          <ul>
+            <li>Python 3 (Windows Installation)</li>
+            <li>VSCode</li>
+            <li>requirements.txt (libraries Installation using PIP)</li>
+            <li>Excel</li>
+            <li>Command Prompt Or Powershell (For Execution)</li>
+          </ul>
+          <p><strong>Environment:</strong></p>
+          <ul>
+            <li>Windows 11 Enterprise</li>
+            <li>Google Chrome</li>
+          </ul>
+          <p><strong>Contributing:</strong> If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request. Your contributions are welcome and highly appreciated!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="main">
+    <div class="container">
+      <h2>🚀 Backoffice Automation</h2>
+
+      <label for="mode">Select Input Type:</label>
+      <select id="mode">
+        <option value="oi">Order Input (oi)</option>
+        <option value="bi">Batch Input (bi)</option>
+      </select>
+
+      <label for="csvFile">Upload CSV File:</label>
+      <input type="file" id="csvFile" accept=".csv" />
+
+      <button onclick="runAutomation()">Run Automation</button>
+
+      <div class="output" id="output"></div>
+      
+      <!-- This button is for download. By default the button name is '📦 Download' but it is hidden   -->
+      <button id="downloadBtn" style="display:none;">📦 Download</button>  
+    </div>
+  </div>
+
+  <script>
+
+    async function runAutomation() {
+      const mode = document.getElementById('mode').value;
+      const fileInput = document.getElementById('csvFile');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        document.getElementById('output').innerHTML =
+          `<div class="error">❌ Please upload a CSV file.</div>`;
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('mode', mode);
+      formData.append('file', file);
+
+      document.getElementById('output').innerHTML =
+        `<div class="spinner"></div><div>⏳ Running automation....,🌐 Opening Browser, so please 🔓 login to the application site if required......</div>`;
+
+      fetch('/run', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          const lines = data.output.split('\n');
+          const formatted = lines
+            .map(line => {
+              if (line.includes('❌')) {
+                return `<div class="error">${line}</div>`;
+              } else if (line.includes('✅')) {
+                return `<div class="success">${line}</div>`;
+              } else {
+                return `<div>${line}</div>`;
+              }
+            })
+            .join('');
+          document.getElementById('output').innerHTML = formatted;
+          
+          // Show download button if URL is provided
+          // if (data.download_url) {
+          //   const downloadBtn = document.getElementById('downloadBtn');
+          //   downloadBtn.style.display = 'inline-block';
+          //   downloadBtn.onclick = () => {
+          //     window.location.href = data.download_url;
+          //   };
+          // }
+        
+          // Show download button if URL is provided
+          if (data.download_url) {
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.style.display = 'inline-block';
+
+            // Change label based on file type
+            if (data.download_url.endsWith('.zip')) {
+              downloadBtn.innerText = '📦 Download Batch ids ZIP';
+            } else {
+              downloadBtn.innerText = '📥 Download Merged CSV';
+            }
+
+            downloadBtn.onclick = () => {
+              window.location.href = data.download_url;
+            };
+          }
+
+        })
+        .catch(err => {
+          document.getElementById('output').innerHTML =
+            `<div class="error">Error: ${err}</div>`;
+        });
+    }
+
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      const readmeBtn = document.querySelector(".readme-btn");
+      const readmePanel = document.querySelector(".readme-panel");
+
+      readmeBtn.addEventListener("click", function (e) {
+        e.stopPropagation(); // Prevents click from bubbling
+        const isVisible = readmePanel.style.display === "block";
+        readmePanel.style.display = isVisible ? "none" : "block";
+      });
+
+      // Optional: Hide panel when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!readmePanel.contains(e.target) && !readmeBtn.contains(e.target)) {
+          readmePanel.style.display = "none";
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Backoffice Automation</title>
+  <style>
+    :root {
+      --primary: #4e54c8;
+      --secondary: #8f94fb;
+      --navbar-bg: #f8f9fa;
+      --success: #28a745;
+      --error: #dc3545;
+      --text: #1c1c1c;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glow: 0 0 10px rgba(78, 84, 200, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--navbar-bg);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar h1 {
+      color: #000000b3;
+      font-size: 18px;
+      margin: 0;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .nav-right {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+    }
+
+    .readme-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .readme-btn {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border: none;
+      color: white;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .readme-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #5a0ebc, #1f65e0);
+    }
+
+    .readme-panel {
+      display: none;
+      position: absolute;
+      top: 35px;
+      right: 0;
+      width: 300px;
+      max-height: 500px;         /* Limits height */
+      overflow-y: auto; 
+      /* background: #b2b4e1(74, 76, 215, 0.95); */
+      background: var(--glass-bg);
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 999;
+      margin-top: 20px;
+    }
+
+    .readme-wrapper:hover .readme-panel,
+    .readme-panel:hover {
+      display: block;
+    }
+
+
+    .main {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px;
+      flex-wrap: wrap;
+    }
+
+    .container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+      color: #fff;
+    }
+
+    select,
+    input[type='file'] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    select:hover,
+    input[type='file']:hover {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      transform: scale(1.02);
+    }
+
+    select:focus,
+    input[type='file']:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(78, 84, 200, 0.6);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: var(--glow);
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(78, 84, 200, 0.8);
+    }
+
+    .output {
+      margin-top: 25px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      min-height: 60px;
+    }
+
+    .success {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .error {
+      color: var(--error);
+      font-weight: bold;
+    }
+
+    .spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40px;
+    }
+
+    .spinner::after {
+      content: '';
+      width: 30px;
+      height: 30px;
+      border: 4px solid #ccc;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-right {
+        position: static;
+        margin-top: 10px;
+      }
+
+      .readme-panel {
+        right: auto;
+        left: 0;
+        top: 40px;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+  <h1>Pg Backoffice Dashboard</h1>
+    <div class="nav-right">
+      <div class="readme-wrapper">
+        <button class="readme-btn">📘 Readme</button>
+        <div class="readme-panel">
+          <h2>Payment Gateway Backoffice Automation Suite</h2>
+          <p><strong>Overview:</strong> This dashboard is designed to streamline backoffice operations for payment gateway automation. Backoffice Application Automation for extracting Payment Information, using Python and Selenium</p>
+          <p><strong>Objective:</strong></p>
+          <ol>
+            <li>Application facilitates automated fetching of Payment information of individual order IDs, batch IDs with different payment statuses in a database during events such as RDS failure or other payment failures.</li>
+            <li>The code utilizes the PG Backoffice Application and the Selenium browser automation tool to emulate user actions and download CSV files for each order ID provided in a list. These individual CSV files are then merged into a consolidated output list and saved to a specified path.</li>
+            <li>Also this code utilizes the PG Backoffice Application and the Selenium browser automation tool to emulate user actions and download CSV files for each batch ID provided in a list</li>
+            <li>By automating these actions, the tool eliminates the need for manual intervention and streamlines the entire process from start to end.</li>
+          </ol>
+          <p><strong>Dependencies:</strong></p>
+          <ul>
+            <li>Python 3 (Windows Installation)</li>
+            <li>VSCode</li>
+            <li>requirements.txt (libraries Installation using PIP)</li>
+            <li>Excel</li>
+            <li>Command Prompt Or Powershell (For Execution)</li>
+          </ul>
+          <p><strong>Environment:</strong></p>
+          <ul>
+            <li>Windows 11 Enterprise</li>
+            <li>Google Chrome</li>
+          </ul>
+          <p><strong>Contributing:</strong> If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request. Your contributions are welcome and highly appreciated!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="main">
+    <div class="container">
+      <h2>🚀 Backoffice Automation</h2>
+
+      <label for="mode">Select Input Type:</label>
+      <select id="mode">
+        <option value="oi">Order Input (oi)</option>
+        <option value="bi">Batch Input (bi)</option>
+      </select>
+
+      <label for="csvFile">Upload CSV File:</label>
+      <input type="file" id="csvFile" accept=".csv" />
+
+      <button onclick="runAutomation()">Run Automation</button>
+
+      <div class="output" id="output"></div>
+    </div>
+  </div>
+
+  <script>
+
+    async function runAutomation() {
+      const mode = document.getElementById('mode').value;
+      const fileInput = document.getElementById('csvFile');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        document.getElementById('output').innerHTML =
+          `<div class="error">❌ Please upload a CSV file.</div>`;
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('mode', mode);
+      formData.append('file', file);
+
+      document.getElementById('output').innerHTML =
+        `<div class="spinner"></div><div>⏳ Running automation....,🌐 Opening Browser, so please 🔓 login to the application site if required......</div>`;
+
+      fetch('/run', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          const lines = data.output.split('\n');
+          const formatted = lines
+            .map(line => {
+              if (line.includes('❌')) {
+                return `<div class="error">${line}</div>`;
+              } else if (line.includes('✅')) {
+                return `<div class="success">${line}</div>`;
+              } else {
+                return `<div>${line}</div>`;
+              }
+            })
+            .join('');
+          document.getElementById('output').innerHTML = formatted;
+        })
+        .catch(err => {
+          document.getElementById('output').innerHTML =
+            `<div class="error">Error: ${err}</div>`;
+        });
+    }
+
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      const readmeBtn = document.querySelector(".readme-btn");
+      const readmePanel = document.querySelector(".readme-panel");
+
+      readmeBtn.addEventListener("click", function (e) {
+        e.stopPropagation(); // Prevents click from bubbling
+        const isVisible = readmePanel.style.display === "block";
+        readmePanel.style.display = isVisible ? "none" : "block";
+      });
+
+      // Optional: Hide panel when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!readmePanel.contains(e.target) && !readmeBtn.contains(e.target)) {
+          readmePanel.style.display = "none";
+        }
+      });
+    });
+
+  </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
