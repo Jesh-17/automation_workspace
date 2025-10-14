@@ -80,7 +80,7 @@ def run_backoffice_automation(file_name, output_location, user_data_dir, chrome_
                 try:
                     # Step 1: Enter ID
                     input_field = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.ID, "orderId"))
+                        EC.presence_of_element_located((By.ID, id_type))
                     )
                     input_field.clear()
                     input_field.send_keys(id_number)
