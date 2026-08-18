@@ -1,0 +1,10 @@
+httpStatusCode
+body
+errors	
+applicationName
+code
+description
+userMessage
+errorDetail
+externalErrorCode
+
